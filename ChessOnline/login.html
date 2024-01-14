@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/login.css">
+</head>
+<body>
+    <div class = "container">
+        <h1>Login</h1>
+        <form id="login-form">
+            <!-- Username field -->
+            <div class = "username">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <!-- Password field -->
+            <div class = "password">
+                <label for="password" width = "78.25" height = "17.6">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <!-- Error message placeholder (for displaying login errors) -->
+            <div id="login-error" style="color: red;"></div>
+        
+            <!-- Submit button -->
+            <button class = "login-button" type="submit">Login</button>
+        </form>
+    
+        <p>Don't have an account? <a href="register.html">Register here</a></p>
+    </div>
+    <!-- JavaScript code to handle the login form submission -->
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+
+            // Create an object to hold the login data
+            var loginData = {
+                username: username,
+                password: password
+            };
+
+            fetch('index/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // You can include additional headers if needed, such as CSRF tokens
+                },
+                body: JSON.stringify(loginData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response data, including errors and redirects
+                if (data.success) {
+                    // Redirect the user to the desired page after successful login
+                    window.location.href = '/main/';
+                } else {
+                    // Display error messages in the 'login-error' div
+                    document.getElementById('login-error').textContent = data.error;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
